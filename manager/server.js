@@ -8,7 +8,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Debug Logging Middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
+
 const PORT = process.env.PORT || 3001;
+
+// Import routes
+const deploymentRoutes = require('./routes/deploymentRoutes');
+app.use('/api', deploymentRoutes);
+
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', service: 'manager', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });
+});
 
 const startServer = async () => {
     try {
@@ -16,14 +30,6 @@ const startServer = async () => {
         const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/zerodown_production';
         await mongoose.connect(mongoUri);
         console.log(`✅ Connected to Persistent MongoDB at ${mongoUri}`);
-
-        // Import routes after DB connection is ready
-        const deploymentRoutes = require('./routes/deploymentRoutes');
-        app.use('/api', deploymentRoutes);
-
-        app.get('/health', (req, res) => {
-            res.json({ status: 'ok', service: 'manager', db: 'connected' });
-        });
 
         app.listen(PORT, () => {
             console.log(`🚀 Manager service running on port ${PORT}`);

@@ -1,5 +1,10 @@
 # Dependencies
 node_modules/
+deployments/
+manager/.env
+router/.env
+.env
+
 jspm_packages/
 .pnp/
 .pnp.js

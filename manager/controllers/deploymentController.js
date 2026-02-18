@@ -48,8 +48,20 @@ exports.startDeployment = async (req, res) => {
                     await deployment.save();
 
                     const sourceDir = path.resolve(__dirname, '../../sample-app');
+                    if (!shell.test('-d', sourceDir)) {
+                        throw new Error(`Sample app not found at ${sourceDir}`);
+                    }
                     shell.mkdir('-p', deployDir);
-                    shell.cp('-R', `${sourceDir}/*`, deployDir);
+
+                    // Windows-safe copy
+                    const files = shell.ls('-A', sourceDir); // All files including hidden
+                    files.forEach(file => {
+                        shell.cp('-R', path.join(sourceDir, file), deployDir);
+                    });
+
+                    if (shell.error()) {
+                        throw new Error(`Copy failed: ${shell.error()}`);
+                    }
                 }
 
                 // B. Install Dependencies
