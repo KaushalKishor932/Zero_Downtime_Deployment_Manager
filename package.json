@@ -1,0 +1,16 @@
+{
+    "name": "zero-downtime-deployment-manager",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev --workspace=manager\" \"npm start --workspace=router\"",
+        "start": "concurrently \"npm start --workspace=manager\" \"npm start --workspace=router\"",
+        "install:all": "npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
