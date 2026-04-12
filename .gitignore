@@ -1,13 +1,19 @@
 # Dependencies
 node_modules/
-deployments/
-manager/.env
-router/.env
-.env
-
-jspm_packages/
-.pnp/
+apps/*/node_modules/
+.pnp
 .pnp.js
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+apps/*/.env
+apps/*/.env.*
+
+# Deployments & Dynamic Repositories
+apps/manager/src/deployments/
+deployments/
 
 # Testing
 coverage/
@@ -15,14 +21,6 @@ coverage/
 # Production
 dist/
 build/
-
-# Misc
-.DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Logs
 npm-debug.log*
@@ -37,3 +35,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+.DS_Store
