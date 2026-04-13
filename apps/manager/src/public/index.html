@@ -14,6 +14,51 @@
         :root {
             --color-primary: #6366f1;
             --color-primary-light: #818cf8;
+            --sidebar-base: #0f1f44;
+            --sidebar-darker: #09112c;
+            --sidebar-lighter: #172c58;
+            --sidebar-text: #e2e8f0;
+            --sidebar-muted: #94a3b8;
+            --sidebar-border: rgba(148, 163, 184, 0.18);
+        }
+
+        .sidebar-base {
+            background: var(--sidebar-base);
+            color: var(--sidebar-text);
+            border-color: var(--sidebar-border);
+        }
+
+        .sidebar-darker {
+            background: var(--sidebar-darker);
+        }
+
+        .sidebar-lighter {
+            background: var(--sidebar-lighter);
+        }
+
+        .sidebar-base .nav-item {
+            color: var(--sidebar-text);
+            background: transparent;
+        }
+
+        .sidebar-base .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .sidebar-base .nav-active {
+            background: rgba(96, 165, 250, 0.15);
+            color: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.25);
+        }
+
+        .sidebar-base .active-indicator {
+            background: #60a5fa;
+        }
+
+        .sidebar-base .sidebar-footer {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         body {
@@ -78,6 +123,78 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-overlay {
+            background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.18), transparent 28%),
+                radial-gradient(circle at 80% 18%, rgba(168, 85, 247, 0.16), transparent 20%),
+                rgba(15, 23, 42, 0.84);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+
+        .animate-float {
+            animation: float 7s ease-in-out infinite;
+        }
+
+        .animate-float.delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(79, 70, 229, 0.16);
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16);
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.1), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.09), transparent 28%);
+            pointer-events: none;
+        }
+
+        .auth-card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-card .form-field input {
+            background: rgba(248, 250, 252, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .auth-card .form-field input:focus {
+            border-color: rgba(99, 102, 241, 0.55);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+        }
+
+        .auth-submit-btn {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .auth-submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 36px rgba(99, 102, 241, 0.18);
+        }
+
+        .auth-toggle-btn {
+            transition: color 0.25s ease, transform 0.25s ease;
+        }
+
+        .auth-toggle-btn:hover {
+            transform: translateY(-1px);
+            color: #4f46e5;
         }
 
         .strategy-btn.active {
@@ -153,8 +270,8 @@
     <div id="main-app" class="flex h-screen overflow-hidden opacity-0 invisible transition-opacity duration-500">
 
         <!-- Sidebar -->
-        <nav
-            class="w-20 lg:w-64 bg-white/60 backdrop-blur-2xl border-r border-white/40 flex flex-col justify-between shrink-0 z-50 shadow-lg shadow-indigo-100/20 transition-all duration-300">
+        <nav id="app-sidebar"
+            class="sidebar-base w-20 lg:w-64 border-r flex flex-col justify-between shrink-0 z-50 shadow-lg shadow-indigo-100/20 transition-all duration-300">
             <div>
                 <!-- Brand -->
                 <div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-white/20">
@@ -163,35 +280,35 @@
                         <i data-lucide="zap" class="text-white w-5 h-5"></i>
                     </div>
                     <span
-                        class="ml-3 text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent tracking-tight hidden lg:block">ZeroDown</span>
+                        class="ml-3 text-lg font-bold text-white tracking-tight hidden lg:block">ZeroDown</span>
                 </div>
 
                 <!-- Navigation -->
                 <div class="p-4 space-y-2">
                     <button onclick="app.switchTab('overview')" id="nav-overview"
-                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium bg-indigo-50/50 text-indigo-600 shadow-sm">
+                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium nav-item nav-active">
                         <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i>
                         <span class="hidden lg:block truncate">Dashboard</span>
                         <div
-                            class="active-indicator absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-lg shadow-indigo-200">
+                            class="active-indicator absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full shadow-lg shadow-sky-400/30">
                         </div>
                     </button>
 
                     <button onclick="app.switchTab('history')" id="nav-history"
-                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium hover:bg-white/40 text-slate-500 hover:text-slate-900">
+                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium nav-item text-slate-300 hover:text-white">
                         <i data-lucide="clock" class="w-5 h-5 shrink-0"></i>
                         <span class="hidden lg:block truncate">Deployment History</span>
                         <div
-                            class="active-indicator hidden absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-lg shadow-indigo-200">
+                            class="active-indicator hidden absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full shadow-lg shadow-sky-400/30">
                         </div>
                     </button>
 
                     <button onclick="app.switchTab('logs')" id="nav-logs"
-                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium hover:bg-white/40 text-slate-500 hover:text-slate-900">
+                        class="w-full flex items-center gap-3 p-3 rounded-xl transition-all group relative font-medium nav-item text-slate-300 hover:text-white">
                         <i data-lucide="terminal" class="w-5 h-5 shrink-0"></i>
                         <span class="hidden lg:block truncate">System Logs</span>
                         <div
-                            class="active-indicator hidden absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-lg shadow-indigo-200">
+                            class="active-indicator hidden absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full shadow-lg shadow-sky-400/30">
                         </div>
                     </button>
                 </div>
@@ -199,15 +316,15 @@
 
             <!-- Footer Info -->
             <div class="p-4 hidden lg:block">
-                <div class="p-4 bg-white/40 backdrop-blur-md rounded-xl border border-white/40 shadow-sm">
+                <div class="p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 shadow-sm">
                     <div class="flex items-center gap-2 mb-2">
                         <div id="system-status-dot"
                             class="w-2 h-2 rounded-full ring-4 bg-emerald-500 ring-emerald-500/20 animate-pulse"></div>
-                        <span id="system-status-text" class="text-xs font-medium text-slate-700">System Online</span>
+                        <span id="system-status-text" class="text-xs font-medium text-slate-100">System Online</span>
                     </div>
-                    <div class="text-xs text-slate-500">
+                    <div class="text-xs text-slate-300">
                         Current Environment:
-                        <span id="current-environment" class="font-bold ml-1 text-slate-600">Checking...</span>
+                        <span id="current-environment" class="font-bold ml-1 text-slate-100">Checking...</span>
                     </div>
                 </div>
             </div>
@@ -690,6 +807,7 @@
             isSettingsOpen: false,
             notifs: [],
             notifHasUnread: false,
+            sidebarShade: 'default',
             deploymentForm: {
                 strategy: 'blue-green',
                 canaryWeight: 10
@@ -868,6 +986,27 @@
                     modal.classList.add('opacity-0', 'invisible');
                     card.classList.add('scale-95');
                     card.classList.remove('scale-100');
+                }
+            },
+
+            toggleSidebarShade: () => {
+                const sidebar = document.getElementById('app-sidebar');
+                const label = document.getElementById('sidebar-shade-label');
+
+                if (app.sidebarShade === 'default') {
+                    app.sidebarShade = 'darker';
+                    sidebar.classList.remove('sidebar-lighter');
+                    sidebar.classList.add('sidebar-darker');
+                    label.innerText = 'Softer Shade';
+                } else if (app.sidebarShade === 'darker') {
+                    app.sidebarShade = 'lighter';
+                    sidebar.classList.remove('sidebar-darker');
+                    sidebar.classList.add('sidebar-lighter');
+                    label.innerText = 'Default Shade';
+                } else {
+                    app.sidebarShade = 'default';
+                    sidebar.classList.remove('sidebar-lighter', 'sidebar-darker');
+                    label.innerText = 'Darker Shade';
                 }
             },
 
